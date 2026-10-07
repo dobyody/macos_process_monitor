@@ -11,11 +11,18 @@ if [ "${UNIVERSAL:-0}" = "1" ]; then
 fi
 swift build -c release $ARCH_FLAGS
 
+# Universal cross-builds land in .build/apple/Products/Release
+# instead of .build/release.
+BIN=".build/release/DevMonitor"
+if [ ! -f "$BIN" ] && [ -f ".build/apple/Products/Release/DevMonitor" ]; then
+    BIN=".build/apple/Products/Release/DevMonitor"
+fi
+
 APP="DevMonitor.app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
-cp .build/release/DevMonitor "$APP/Contents/MacOS/DevMonitor"
+cp "$BIN" "$APP/Contents/MacOS/DevMonitor"
 if [ -f Assets/DevMonitor.icns ]; then
     cp Assets/DevMonitor.icns "$APP/Contents/Resources/DevMonitor.icns"
 fi
