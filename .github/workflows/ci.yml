@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    name: Build & smoke test (macOS)
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: swift build -c release
+
+      - name: Smoke test (CLI scan mode)
+        run: ./.build/release/DevMonitor --scan
+
+      - name: Build .app bundle
+        run: ./build.sh

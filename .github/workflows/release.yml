@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    name: Build universal .app & publish release
+    runs-on: macos-14
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build universal binary & .app bundle
+        run: UNIVERSAL=1 ./build.sh
+
+      - name: Smoke test (CLI scan mode)
+        run: ./DevMonitor.app/Contents/MacOS/DevMonitor --scan
+
+      - name: Zip .app
+        run: |
+          mkdir -p dist
+          cd "$(dirname DevMonitor.app)"
+          ditto -c -k --keepParent DevMonitor.app "$GITHUB_WORKSPACE/dist/DevMonitor.app.zip"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/DevMonitor.app.zip
+          generate_release_notes: true

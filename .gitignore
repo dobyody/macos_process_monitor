@@ -1,0 +1,16 @@
+# Build artifacts
+.build/
+dist/
+DevMonitor.app
+
+# macOS
+.DS_Store
+*.dSYM
+
+# Local scratch (pre-repo video tooling)
+out/
+.video_agent/
+/tmp/
+
+# ZCode session artifacts
+.zcode/
