@@ -21,15 +21,15 @@ final class MonitorStore: ObservableObject {
             forName: UserDefaults.didChangeNotification,
             object: nil,
             queue: .main
-        ) { [weak self] _ in
-            Task { @MainActor in self?.scheduleTimer() }
+        ) { _ in
+            Task { @MainActor in MonitorStore.shared.scheduleTimer() }
         }
     }
 
     private func scheduleTimer() {
         timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: AppSettings.refreshInterval, repeats: true) { [weak self] _ in
-            Task { @MainActor in self?.refresh() }
+        timer = Timer.scheduledTimer(withTimeInterval: AppSettings.refreshInterval, repeats: true) { _ in
+            Task { @MainActor in MonitorStore.shared.refresh() }
         }
     }
 
